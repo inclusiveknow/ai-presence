@@ -332,14 +332,16 @@
       const f = FLASH_TRIGGERS[y];
       const pre = f.preDelay || 0;
       const hold = f.hold || FLASH_DEFAULT_HOLD;
-      return pre + hold + FLASH_FADE_MS + 150; // +150ms breathing room
+      return pre + hold + FLASH_FADE_MS + 150;
     }
-    if (y < 2010) return 950;
-    if (y < 2017) return 720;
-    if (y < 2020) return 600;
-    if (y < 2022) return 500;
-    if (y < 2024) return 650;
-    return 800;
+    // tighter pacing on non-flash years — they're just rhythmic year ticks
+    // between the anchored moments
+    if (y < 2010) return 550;
+    if (y < 2017) return 420;
+    if (y < 2020) return 360;
+    if (y < 2022) return 320;
+    if (y < 2024) return 420;
+    return 480;
   }
 
   let playbackTimer = null;
@@ -355,7 +357,9 @@
     if (!state.isPlaying || state.isLive) return;
     const nextYear = state.currentYear + 1;
     if (nextYear > LAST_YEAR) {
-      enterLiveMode();
+      // wait for the 2026 flash to fully play out and fade before
+      // live mode reveals the ticker — otherwise they collide at center
+      playbackTimer = setTimeout(enterLiveMode, holdMsForYear(state.currentYear));
       return;
     }
     playbackTimer = setTimeout(() => {
@@ -422,17 +426,20 @@
   const FLASH_DEFAULT_HOLD = 3500;
   const FLASH_FADE_MS = 700;
   const FLASH_TRIGGERS = {
-    1999: { event: "the matrix premieres · NVIDIA invents the GPU", hold: 5000, preDelay: 700 },
-    2011: { event: "IBM Watson wins Jeopardy · live on national TV", hold: 4500 },
-    2012: { event: "AlexNet · machines start to see better than we do", hold: 4500 },
-    2016: { event: "AlphaGo beats Lee Sedol · the game we thought was ours", hold: 5000 },
-    2017: { event: "Transformer · ‘attention is all you need’", hold: 4500 },
-    2020: { event: "GPT-3 · 175 billion parameters · the machine writes back", hold: 4800 },
-    2022: { event: "ChatGPT · 100 million users · in sixty days", hold: 5000 },
-    2023: { event: "GPT-4 passes the bar exam · then the medical licensing exam", hold: 4500 },
-    2024: { event: "Sora · reality becomes negotiable", hold: 4800 },
-    2025: { event: "reasoning models · they start to think out loud", hold: 4500 },
-    2026: { event: "you cannot count them", hold: 5500 },
+    1999: { event: "the matrix premieres · NVIDIA invents the GPU", hold: 4800, preDelay: 700 },
+    2004: { event: "DARPA Grand Challenge · the first car drives itself across the desert", hold: 4200 },
+    2009: { event: "ImageNet · Fei-Fei Li builds the test machines will use to surpass us", hold: 4500 },
+    2011: { event: "IBM Watson wins Jeopardy · live on national TV", hold: 4200 },
+    2012: { event: "AlexNet · machines start to see better than we do", hold: 4200 },
+    2014: { event: "GANs · machines learn to dream", hold: 4200 },
+    2016: { event: "AlphaGo beats Lee Sedol · the game we thought was ours", hold: 4500 },
+    2017: { event: "Transformer · ‘attention is all you need’", hold: 4200 },
+    2020: { event: "GPT-3 · 175 billion parameters · the machine writes back", hold: 4500 },
+    2022: { event: "ChatGPT · 100 million users · in sixty days", hold: 4800 },
+    2023: { event: "GPT-4 passes the bar exam · then the medical licensing exam", hold: 4200 },
+    2024: { event: "Sora · reality becomes negotiable", hold: 4500 },
+    2025: { event: "reasoning models · they start to think out loud", hold: 4200 },
+    2026: { event: "you cannot count them", hold: 5000 },
   };
 
   const flashEl = document.getElementById("year-flash");
@@ -572,25 +579,27 @@
       // dramatic count-up from 0 to live rate over ~1.6s, then settle
       // into per-second updates — uses setInterval for reliability under
       // headless / background-tab throttling that can pause rAF.
+      // Kick off the since-counter immediately so it begins accumulating
+      // from second zero of live mode. The count-up animation that
+      // follows is just the dramatic reveal of the per-second rate.
+      startSinceCounter(computeRate);
+
+      // Count-up uses REAL elapsed time (not step counts) so it stays
+      // accurate under headless / background-tab interval throttling.
       const targetValue = computeRate();
-      const stepMs = 30;
       const durationMs = 1600;
-      const totalSteps = Math.ceil(durationMs / stepMs);
-      let step = 0;
+      const startTime = Date.now();
       const countUpTimer = setInterval(() => {
-        step++;
-        const t = Math.min(1, step / totalSteps);
+        const elapsed = Date.now() - startTime;
+        const t = Math.min(1, elapsed / durationMs);
         const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
         tickEl.textContent = Math.round(targetValue * eased).toLocaleString();
-        if (step >= totalSteps) {
+        if (t >= 1) {
           clearInterval(countUpTimer);
           doTick();
           tickerTimer = setInterval(doTick, 1000);
-          // start the "since you arrived" running total now that the
-          // dramatic count-up has landed on the per-second rate
-          startSinceCounter(computeRate);
         }
-      }, stepMs);
+      }, 30);
     }
 
     // -- inline provider rotator startup --
