@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+  <!-- background -->
+  <defs>
+    <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#03060c" stop-opacity="0"/>
+      <stop offset="60%" stop-color="#000003" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.92"/>
+    </radialGradient>
+    <radialGradient id="numGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="greenGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="warmGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- solid base -->
+  <rect width="1200" height="630" fill="#03060c"/>
+
+  <!-- matrix code rain (subtle, frozen frame) -->
+  <g font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="16" fill="#00ff66" opacity="0.22">
+    <!-- left side columns -->
+    <text x="40"  y="50">0</text><text x="40"  y="70">1</text><text x="40"  y="90">ｱ</text><text x="40"  y="110">0</text><text x="40"  y="130">1</text>
+    <text x="80"  y="20">1</text><text x="80"  y="40">0</text><text x="80"  y="60">ｲ</text><text x="80"  y="80">1</text>
+    <text x="120" y="100">0</text><text x="120" y="120">ｳ</text><text x="120" y="140">1</text><text x="120" y="160">0</text><text x="120" y="180">1</text><text x="120" y="200">0</text>
+    <text x="160" y="40">ｴ</text><text x="160" y="60">1</text><text x="160" y="80">0</text>
+    <text x="200" y="120">1</text><text x="200" y="140">0</text><text x="200" y="160">ｵ</text><text x="200" y="180">1</text>
+    <text x="240" y="20">0</text><text x="240" y="40">1</text><text x="240" y="60">0</text><text x="240" y="80">ｶ</text>
+    <text x="280" y="200">ｷ</text><text x="280" y="220">1</text><text x="280" y="240">0</text>
+    <text x="40"  y="450">1</text><text x="40"  y="470">0</text><text x="40"  y="490">ｸ</text><text x="40"  y="510">1</text>
+    <text x="80"  y="520">0</text><text x="80"  y="540">1</text><text x="80"  y="560">ｹ</text>
+    <text x="120" y="540">1</text><text x="120" y="560">0</text><text x="120" y="580">1</text>
+    <text x="200" y="500">ｺ</text><text x="200" y="520">1</text><text x="200" y="540">0</text>
+    <!-- right side columns -->
+    <text x="980"  y="40">1</text><text x="980"  y="60">0</text><text x="980"  y="80">ｻ</text><text x="980"  y="100">1</text>
+    <text x="1020" y="20">0</text><text x="1020" y="40">1</text><text x="1020" y="60">ｼ</text>
+    <text x="1060" y="80">1</text><text x="1060" y="100">ｽ</text><text x="1060" y="120">0</text><text x="1060" y="140">1</text>
+    <text x="1100" y="40">ｾ</text><text x="1100" y="60">0</text><text x="1100" y="80">1</text>
+    <text x="1140" y="120">1</text><text x="1140" y="140">0</text><text x="1140" y="160">ｿ</text>
+    <text x="940"  y="160">0</text><text x="940"  y="180">1</text><text x="940"  y="200">ﾀ</text>
+    <text x="980"  y="500">ﾁ</text><text x="980"  y="520">1</text><text x="980"  y="540">0</text>
+    <text x="1020" y="540">0</text><text x="1020" y="560">ﾂ</text><text x="1020" y="580">1</text>
+    <text x="1100" y="500">1</text><text x="1100" y="520">ﾃ</text><text x="1100" y="540">0</text>
+    <text x="1140" y="560">0</text><text x="1140" y="580">1</text>
+  </g>
+
+  <!-- vignette focuses the eye on the center -->
+  <rect width="1200" height="630" fill="url(#vignette)"/>
+
+  <!-- glow behind big number -->
+  <circle cx="600" cy="345" r="280" fill="url(#numGlow)"/>
+
+  <!-- The Matrix quote (top) -->
+  <g font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="400" fill="#f4ede1">
+    <text x="600" y="92" text-anchor="middle" font-size="46">
+      <tspan fill="#00ff66" filter="url(#greenGlow)">&#8220;</tspan>Humankind is a virus.
+    </text>
+    <text x="600" y="148" text-anchor="middle" font-size="46">
+      You are a plague.<tspan fill="#00ff66" filter="url(#greenGlow)">&#8221;</tspan>
+    </text>
+  </g>
+  <text x="600" y="188" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="14" letter-spacing="4" fill="#00ff66" filter="url(#greenGlow)" opacity="0.9">
+    — AGENT SMITH · THE MATRIX · 1999
+  </text>
+
+  <!-- separator -->
+  <line x1="540" y1="225" x2="660" y2="225" stroke="rgba(244,237,225,0.2)" stroke-width="1"/>
+
+  <!-- big number block -->
+  <text x="600" y="262" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="14" letter-spacing="5" fill="#00ff66" filter="url(#greenGlow)">
+    RIGHT NOW · GLOBALLY
+  </text>
+  <text x="600" y="408" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="148" font-weight="300" fill="#fff" filter="url(#warmGlow)" letter-spacing="-2">
+    ~80,000
+  </text>
+  <text x="600" y="448" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="19" letter-spacing="6" fill="#f4ede1">
+    AI PROMPTS &#183; EVERY SECOND
+  </text>
+
+  <!-- footer line: source cite + handle -->
+  <text x="600" y="496" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="12" letter-spacing="2.5" fill="rgba(244,237,225,0.45)" font-style="italic">
+    est. from public usage of ChatGPT &#183; Gemini &#183; Claude &#183; Copilot &#183; Meta AI &#183; DeepSeek
+  </text>
+
+  <!-- branding bar at bottom -->
+  <line x1="100" y1="565" x2="1100" y2="565" stroke="rgba(244,237,225,0.12)" stroke-width="1"/>
+  <text x="100" y="600" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="14" letter-spacing="5" fill="#f4ede1">
+    PRESENCE
+  </text>
+  <text x="100" y="616" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="10" letter-spacing="3" fill="rgba(244,237,225,0.5)" font-style="italic">
+    a live map of the AI already on Earth
+  </text>
+  <text x="1100" y="608" text-anchor="end" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="11" letter-spacing="3" fill="#00ff66" filter="url(#greenGlow)" opacity="0.85">
+    WATCH &#8594;
+  </text>
+</svg>
