@@ -129,28 +129,33 @@ window.INFERENCE_DCS = [
 // when the timeline crosses this year (placement weighted by hub).
 // ======================================================
 window.HISTORY = [
-  { year: 1999, count: 3,    seed: 3,    hubs: ["nyc", "tor", "par"], note: "the matrix premieres · NVIDIA invents the GPU · three known networks" },
-  { year: 2000, count: 5,    seed: 2,    hubs: ["nyc", "tor"],         note: "" },
-  { year: 2002, count: 8,    seed: 3,    hubs: ["mtv", "tor", "edi"],  note: "svms dominate" },
-  { year: 2005, count: 14,   seed: 6,    hubs: ["mtv", "tor", "mtl", "edi", "zrh"], note: "deep belief networks" },
-  { year: 2007, count: 20,   seed: 6,    hubs: ["tor", "mtl", "mtv"],  note: "" },
-  { year: 2009, count: 28,   seed: 8,    hubs: ["mtv", "sf", "tor", "bjs"], note: "imagenet released" },
-  { year: 2010, count: 38,   seed: 10,   hubs: ["mtv", "sf", "tor", "mtl", "bos"], note: "gpu deep learning begins" },
-  { year: 2012, count: 60,   seed: 22,   hubs: ["tor", "mtv", "sf", "nyc", "bjs", "lon"], note: "alexnet shocks the field" },
-  { year: 2013, count: 85,   seed: 25,   hubs: ["mtv", "sf", "lon", "nyc", "tor", "bjs"], note: "word2vec · seq2seq" },
-  { year: 2014, count: 120,  seed: 35,   hubs: ["mtv", "sf", "lon", "par", "bjs", "mtl"], note: "deepmind · facebook fair" },
-  { year: 2015, count: 175,  seed: 55,   hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par"], note: "tensorflow · resnet" },
-  { year: 2016, count: 240,  seed: 65,   hubs: ["sf", "lon", "mtv", "nyc", "bjs", "sea", "par", "tor"], note: "alphago beats lee sedol" },
-  { year: 2017, count: 340,  seed: 100,  hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "tor", "tlv"], note: "transformer published" },
-  { year: 2018, count: 480,  seed: 140,  hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par", "tor", "bos", "tlv"], note: "bert · gpt-1" },
-  { year: 2019, count: 680,  seed: 200,  hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par", "tlv", "tor", "bos", "blr"], note: "gpt-2 · t5" },
-  { year: 2020, count: 950,  seed: 270,  hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par", "sha", "tlv", "blr", "bos"], note: "gpt-3 · 175B parameters" },
-  { year: 2021, count: 1300, seed: 360,  hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par", "sha", "szx", "tlv", "blr", "bos", "tor"], note: "codex · dall-e · clip" },
-  { year: 2022, count: 1850, seed: 550,  hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par", "sha", "szx", "tlv", "blr", "bos", "hgh", "icn", "tyo", "tor"], note: "chatgpt · 100M users in 2 months" },
-  { year: 2023, count: 2700, seed: 850,  hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par", "sha", "szx", "hgh", "tlv", "blr", "bos", "icn", "tyo", "ams", "muc", "ber", "syd", "sao", "tor", "pit", "aus", "dxb", "ruh"], note: "gpt-4 · claude · llama · mistral" },
-  { year: 2024, count: 3800, seed: 1100, hubs: null, note: "GPT-4o · Claude 3.5 · Llama 3 · agents arrive" },
-  { year: 2025, count: 5200, seed: 1400, hubs: null, note: "reasoning models · DeepSeek R1 · long context" },
-  { year: 2026, count: 6800, seed: 1600, hubs: null, note: "now · you cannot count them" },
+  // `count` is the cumulative count shown in the corner counter (the
+  // public-facing number from sources like Epoch AI). `seed` is the
+  // number of point geometries actually plotted on the globe — kept
+  // smaller than `count` so the visualization reads as a constellation
+  // of distinct lights, not an opaque blob.
+  { year: 1999, count: 3,    seed: 3,   hubs: ["nyc", "tor", "par"], note: "the matrix premieres · NVIDIA invents the GPU · three known networks" },
+  { year: 2000, count: 5,    seed: 2,   hubs: ["nyc", "tor"],         note: "" },
+  { year: 2002, count: 8,    seed: 3,   hubs: ["mtv", "tor", "edi"],  note: "svms dominate" },
+  { year: 2005, count: 14,   seed: 4,   hubs: ["mtv", "tor", "mtl", "edi", "zrh"], note: "deep belief networks" },
+  { year: 2007, count: 20,   seed: 4,   hubs: ["tor", "mtl", "mtv"],  note: "" },
+  { year: 2009, count: 28,   seed: 5,   hubs: ["mtv", "sf", "tor", "bjs"], note: "imagenet released" },
+  { year: 2010, count: 38,   seed: 6,   hubs: ["mtv", "sf", "tor", "mtl", "bos"], note: "gpu deep learning begins" },
+  { year: 2012, count: 60,   seed: 12,  hubs: ["tor", "mtv", "sf", "nyc", "bjs", "lon"], note: "alexnet shocks the field" },
+  { year: 2013, count: 85,   seed: 14,  hubs: ["mtv", "sf", "lon", "nyc", "tor", "bjs"], note: "word2vec · seq2seq" },
+  { year: 2014, count: 120,  seed: 18,  hubs: ["mtv", "sf", "lon", "par", "bjs", "mtl"], note: "deepmind · facebook fair" },
+  { year: 2015, count: 175,  seed: 25,  hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par"], note: "tensorflow · resnet" },
+  { year: 2016, count: 240,  seed: 32,  hubs: ["sf", "lon", "mtv", "nyc", "bjs", "sea", "par", "tor"], note: "alphago beats lee sedol" },
+  { year: 2017, count: 340,  seed: 45,  hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "tor", "tlv"], note: "transformer published" },
+  { year: 2018, count: 480,  seed: 60,  hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par", "tor", "bos", "tlv"], note: "bert · gpt-1" },
+  { year: 2019, count: 680,  seed: 80,  hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par", "tlv", "tor", "bos", "blr"], note: "gpt-2 · t5" },
+  { year: 2020, count: 950,  seed: 110, hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par", "sha", "tlv", "blr", "bos"], note: "gpt-3 · 175B parameters" },
+  { year: 2021, count: 1300, seed: 140, hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par", "sha", "szx", "tlv", "blr", "bos", "tor"], note: "codex · dall-e · clip" },
+  { year: 2022, count: 1850, seed: 200, hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par", "sha", "szx", "tlv", "blr", "bos", "hgh", "icn", "tyo", "tor"], note: "chatgpt · 100M users in 2 months" },
+  { year: 2023, count: 2700, seed: 280, hubs: ["sf", "mtv", "lon", "nyc", "bjs", "sea", "par", "sha", "szx", "hgh", "tlv", "blr", "bos", "icn", "tyo", "ams", "muc", "ber", "syd", "sao", "tor", "pit", "aus", "dxb", "ruh"], note: "gpt-4 · claude · llama · mistral" },
+  { year: 2024, count: 3800, seed: 360, hubs: null, note: "GPT-4o · Claude 3.5 · Llama 3 · agents arrive" },
+  { year: 2025, count: 5200, seed: 450, hubs: null, note: "reasoning models · DeepSeek R1 · long context" },
+  { year: 2026, count: 6800, seed: 520, hubs: null, note: "now · you cannot count them" },
 ];
 
 // when a historical entry has hubs:null, sprinkle weighted across all hubs

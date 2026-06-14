@@ -37,16 +37,15 @@
   const POINT_COLORS = {
     // matches the legend pills: models / code / inference.
     // historical points are categorized so the legend toggles control
-    // BOTH the cumulative cohort and the live pulses. The visual language
-    // is consistent: amber = research labs and model releases,
-    // blue = developer/code hubs, ember = inference datacenters.
-    models: "#ff9a3c",
-    modelsRecent: "#ffc480",
-    code: "#5fa8d1",
-    codeRecent: "#a3cce6",
-    inference: "#e0552a",
-    inferenceRecent: "#f5895c",
-    newPulse: "#ffffff", // brief bright flash on each newly-added point
+    // BOTH the cumulative cohort and the live pulses. Saturated near-
+    // fluorescent values so dots read as glowing lights, not dim spots.
+    models: "#ffb720",        // bright saturated amber
+    modelsRecent: "#ffe080",  // near-glowing yellow
+    code: "#3ec3ff",          // bright cyan-blue
+    codeRecent: "#a8e6ff",    // pale-glowing blue
+    inference: "#ff5a2a",     // bright red-orange
+    inferenceRecent: "#ff9468", // glowing coral
+    newPulse: "#ffffff",
   };
 
   // ============================================================
@@ -193,13 +192,13 @@
     .bumpImageUrl("https://unpkg.com/three-globe/example/img/earth-topology.png")
     .backgroundColor("#03060c")
     .showAtmosphere(true)
-    .atmosphereColor("#3a8eb8")            // brighter, more visible atmosphere
-    .atmosphereAltitude(0.28)              // thicker glow
+    .atmosphereColor("#5fb0e0")            // brighter atmospheric halo
+    .atmosphereAltitude(0.35)              // thicker glow so the globe reads against black
     .pointsMerge(false)
-    .pointAltitude(0.014)                  // closer to surface so they don't blob
-    .pointRadius((d) => d.radius || 0.22)  // smaller, constellated, not blocky
+    .pointAltitude(0.020)                  // floating ornament feel
+    .pointRadius((d) => d.radius || 0.32)  // bigger and visibly bright
     .pointColor((d) => d.color || POINT_COLORS.models)
-    .pointResolution(8)
+    .pointResolution(12)                   // smoother spheres read more luminous
     .pointsTransitionDuration(600)
     .ringColor((d) => d.color || POINT_COLORS.models)
     .ringMaxRadius((d) => d.maxR || 4)
@@ -302,7 +301,7 @@
         return {
           ...p,
           color: recent ? bright : base,
-          radius: recent ? 0.30 : 0.20,
+          radius: recent ? 0.42 : 0.30, // bright distinct lights, not blobs
         };
       });
   }
