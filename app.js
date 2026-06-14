@@ -33,6 +33,10 @@
   let tickerTimer = null;
   let providerTimer = null;
   let providerIndex = 0;
+  // running totals for the "since you arrived" counter
+  let sinceArrived = 0;          // accumulated AI prompts since live mode started
+  let sinceLastTickMs = 0;
+  let sinceTimer = null;
 
   const POINT_COLORS = {
     // matches the legend pills: models / code / inference.
@@ -412,19 +416,23 @@
   // ============================================================
   // YEAR FLASH — turn the time-lapse into a story
   // ============================================================
-  // each flash declares its own hold duration so anchor moments (1999, 2026)
-  // get the time they need; default is 1900ms hold + 600ms fade = 2500ms total
-  const FLASH_DEFAULT_HOLD = 1900;
+  // Each anchor moment gets the time it needs to actually land.
+  // Copy is true, specific, and culturally-anchored — every line cites a real
+  // event and, where possible, the cultural touchstone people will recognize.
+  const FLASH_DEFAULT_HOLD = 3500;
   const FLASH_FADE_MS = 700;
   const FLASH_TRIGGERS = {
-    1999: { event: "the matrix premieres · the GPU is born", hold: 4000, preDelay: 700 },
-    2012: { event: "AlexNet · deep learning arrives", hold: 2200 },
-    2017: { event: "Transformer · attention is all you need", hold: 2400 },
-    2020: { event: "GPT-3 · 175 billion parameters", hold: 2400 },
-    2022: { event: "ChatGPT · 100 million users in 2 months", hold: 2800 },
-    2024: { event: "GPT-4o · Claude 3.5 · agents arrive", hold: 2400 },
-    2025: { event: "reasoning models · DeepSeek R1 · long context", hold: 2400 },
-    2026: { event: "you cannot count them", hold: 4500 },
+    1999: { event: "the matrix premieres · NVIDIA invents the GPU", hold: 5000, preDelay: 700 },
+    2011: { event: "IBM Watson wins Jeopardy · live on national TV", hold: 4500 },
+    2012: { event: "AlexNet · machines start to see better than we do", hold: 4500 },
+    2016: { event: "AlphaGo beats Lee Sedol · the game we thought was ours", hold: 5000 },
+    2017: { event: "Transformer · ‘attention is all you need’", hold: 4500 },
+    2020: { event: "GPT-3 · 175 billion parameters · the machine writes back", hold: 4800 },
+    2022: { event: "ChatGPT · 100 million users · in sixty days", hold: 5000 },
+    2023: { event: "GPT-4 passes the bar exam · then the medical licensing exam", hold: 4500 },
+    2024: { event: "Sora · reality becomes negotiable", hold: 4800 },
+    2025: { event: "reasoning models · they start to think out loud", hold: 4500 },
+    2026: { event: "you cannot count them", hold: 5500 },
   };
 
   const flashEl = document.getElementById("year-flash");
@@ -578,6 +586,9 @@
           clearInterval(countUpTimer);
           doTick();
           tickerTimer = setInterval(doTick, 1000);
+          // start the "since you arrived" running total now that the
+          // dramatic count-up has landed on the per-second rate
+          startSinceCounter(computeRate);
         }
       }, stepMs);
     }
@@ -614,6 +625,10 @@
     if (inferenceHeartbeatInterval) { clearInterval(inferenceHeartbeatInterval); inferenceHeartbeatInterval = null; }
     if (tickerTimer) { clearInterval(tickerTimer); tickerTimer = null; }
     if (providerTimer) { clearInterval(providerTimer); providerTimer = null; }
+    if (sinceTimer) { clearInterval(sinceTimer); sinceTimer = null; }
+    sinceArrived = 0;
+    const sinceEl = document.getElementById("since-num");
+    if (sinceEl) sinceEl.textContent = "0";
     state.activePulses = [];
     globe.ringsData([]);
     document.getElementById("live-ticker").classList.add("invisible");
@@ -621,6 +636,26 @@
     document.getElementById("hud").classList.remove("live-mode");
     // resume gentle drift when scrubbing back into the time-lapse
     if (controls) controls.autoRotate = true;
+  }
+
+  // start the per-frame accumulator for "since you arrived". Updates every
+  // 80ms so the number visibly climbs — the rapid tick is the whole point.
+  function startSinceCounter(rateFn) {
+    if (sinceTimer) return;
+    const el = document.getElementById("since-num");
+    if (!el) return;
+    sinceArrived = 0;
+    sinceLastTickMs = Date.now();
+    el.textContent = "0";
+    const update = () => {
+      const now = Date.now();
+      const dt = (now - sinceLastTickMs) / 1000;
+      sinceLastTickMs = now;
+      // accumulate at the current per-second rate
+      sinceArrived += rateFn() * dt;
+      el.textContent = Math.round(sinceArrived).toLocaleString();
+    };
+    sinceTimer = setInterval(update, 80);
   }
 
   // ---- GitHub events ----

@@ -380,6 +380,47 @@ a { color: inherit; text-decoration: none; }
   font-style: italic;
 }
 
+/* "since you arrived" — a running personal-scale counter that
+   makes the per-second rate visceral: the number ticks up rapidly
+   while you sit on the page. */
+.since-block {
+  margin-top: clamp(1.2rem, 4vh, 2rem);
+  padding-top: clamp(0.8rem, 2vh, 1.2rem);
+  border-top: 1px solid rgba(0, 255, 102, 0.22);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.since-label {
+  font-size: clamp(0.65rem, 1.8vw, 0.74rem);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--matrix-green);
+  text-shadow: 0 0 8px var(--matrix-glow);
+  opacity: 0.92;
+}
+
+.since-num {
+  font-size: clamp(1.6rem, 5.5vw, 2.6rem);
+  font-weight: 200;
+  letter-spacing: -0.01em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+  text-shadow:
+    0 0 14px rgba(255, 255, 255, 0.45),
+    0 0 28px rgba(0, 255, 102, 0.18);
+  line-height: 1;
+}
+
+.since-suffix {
+  font-size: clamp(0.62rem, 1.7vw, 0.7rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
 /* ======================================================
    PROVIDER ROTATOR — striking ambient facts
    ====================================================== */
