@@ -9,14 +9,14 @@
 :root {
   --bg: #03060c;
   --bg-deep: #000003;
-  --text: #f4ede1;
-  --text-dim: rgba(244, 237, 225, 0.62);
-  --text-faint: rgba(244, 237, 225, 0.32);
-  --rule: rgba(244, 237, 225, 0.14);
+  --text: #ffffff;
+  --text-dim: rgba(255, 255, 255, 0.85);
+  --text-faint: rgba(255, 255, 255, 0.55);
+  --rule: rgba(255, 255, 255, 0.22);
 
   --models: #ff9a3c;
-  --code: #4a90b8;
-  --inference: #c2410c;
+  --code: #5fa8d1;
+  --inference: #e0552a;
   --historical: #6b7c8c;
 
   --matrix-green: #00ff66;

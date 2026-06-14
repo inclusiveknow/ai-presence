@@ -35,14 +35,18 @@
   let providerIndex = 0;
 
   const POINT_COLORS = {
-    // historical points are warm bright gold/amber — they read as
-    // "infection nodes" accumulating on the globe.
-    historical: "#ffb84d",        // warm bright gold
-    historicalRecent: "#fff2a8",  // near-white-yellow, almost glowing
-    historicalNewPulse: "#ffffff",
+    // matches the legend pills: models / code / inference.
+    // historical points are categorized so the legend toggles control
+    // BOTH the cumulative cohort and the live pulses. The visual language
+    // is consistent: amber = research labs and model releases,
+    // blue = developer/code hubs, ember = inference datacenters.
     models: "#ff9a3c",
-    code: "#4a90b8",
-    inference: "#c2410c",
+    modelsRecent: "#ffc480",
+    code: "#5fa8d1",
+    codeRecent: "#a3cce6",
+    inference: "#e0552a",
+    inferenceRecent: "#f5895c",
+    newPulse: "#ffffff", // brief bright flash on each newly-added point
   };
 
   // ============================================================
@@ -192,10 +196,10 @@
     .atmosphereColor("#3a8eb8")            // brighter, more visible atmosphere
     .atmosphereAltitude(0.28)              // thicker glow
     .pointsMerge(false)
-    .pointAltitude(0.028)                  // lifted further off the surface
-    .pointRadius((d) => d.radius || 0.48)  // significantly bigger so spread reads instantly
-    .pointColor((d) => d.color || POINT_COLORS.historical)
-    .pointResolution(10)
+    .pointAltitude(0.014)                  // closer to surface so they don't blob
+    .pointRadius((d) => d.radius || 0.22)  // smaller, constellated, not blocky
+    .pointColor((d) => d.color || POINT_COLORS.models)
+    .pointResolution(8)
     .pointsTransitionDuration(600)
     .ringColor((d) => d.color || POINT_COLORS.models)
     .ringMaxRadius((d) => d.maxR || 4)
@@ -237,10 +241,9 @@
   }
 
   function jitterPoint(hub, rngFn) {
-    // wider spread so accumulated points read as regional coverage
-    // rather than tightly stacked at one pixel
-    const dLat = (rngFn() - 0.5) * 4.5;
-    const dLng = (rngFn() - 0.5) * 6;
+    // moderate spread so dots constellate around hubs without blobbing
+    const dLat = (rngFn() - 0.5) * 3;
+    const dLng = (rngFn() - 0.5) * 4;
     return { lat: hub.lat + dLat, lng: hub.lng + dLng };
   }
 
@@ -265,11 +268,20 @@
       for (let i = 0; i < epoch.seed; i++) {
         const hub = pickWeightedHub(epoch.hubs, localRng);
         const p = jitterPoint(hub, localRng);
+        // assign one of three categories so the legend keys describe
+        // the historical cohort too. Distribution roughly mirrors how
+        // we'd think of AI growth: research models > developer code >
+        // inference datacenters in count, balanced so each layer is felt.
+        const r = localRng();
+        const category =
+          r < 0.42 ? "models" :
+          r < 0.78 ? "code"   :
+                     "inference";
         all.push({
           ...p,
           year: epoch.year,
-          radius: 0.20 + localRng() * 0.10,
-          color: POINT_COLORS.historical,
+          category,
+          radius: 0.18 + localRng() * 0.08,
           kind: "historical",
         });
       }
@@ -280,14 +292,19 @@
   const ALL_HISTORICAL = generateHistoricalPoints();
 
   function pointsThroughYear(year) {
-    return ALL_HISTORICAL.filter((p) => p.year <= year).map((p) => {
-      const recent = year - p.year < 3;
-      return {
-        ...p,
-        color: recent ? POINT_COLORS.historicalRecent : POINT_COLORS.historical,
-        radius: recent ? 0.28 : 0.20,
-      };
-    });
+    return ALL_HISTORICAL
+      .filter((p) => p.year <= year)
+      .filter((p) => state.layers[p.category])  // legend toggles control cohort visibility
+      .map((p) => {
+        const recent = year - p.year < 3;
+        const base = POINT_COLORS[p.category] || POINT_COLORS.models;
+        const bright = POINT_COLORS[p.category + "Recent"] || base;
+        return {
+          ...p,
+          color: recent ? bright : base,
+          radius: recent ? 0.30 : 0.20,
+        };
+      });
   }
 
   // ============================================================
@@ -371,14 +388,16 @@
         : newPoints.filter((_, i) => i % Math.ceil(newPoints.length / cap) === 0).slice(0, cap);
       sample.forEach((p, i) => {
         setTimeout(() => {
+          // only flash if this point's category is currently visible
+          if (!state.layers[p.category]) return;
           addPulse({
             lat: p.lat,
             lng: p.lng,
-            color: POINT_COLORS.historicalNewPulse,
+            color: POINT_COLORS.newPulse,
             maxR: 1.8,
             speed: 1.6,
             ttl: 1400,
-            hubId: null, // don't count toward trending
+            hubId: null,
           });
         }, i * 70);
       });
@@ -965,14 +984,21 @@
   // ============================================================
   // LAYER TOGGLES
   // ============================================================
+  function rerenderHistorical() {
+    state.cumulativePoints = pointsThroughYear(state.currentYear);
+    renderPoints();
+  }
   document.getElementById("l-models").addEventListener("change", (e) => {
     state.layers.models = e.target.checked;
+    rerenderHistorical();
   });
   document.getElementById("l-code").addEventListener("change", (e) => {
     state.layers.code = e.target.checked;
+    rerenderHistorical();
   });
   document.getElementById("l-inference").addEventListener("change", (e) => {
     state.layers.inference = e.target.checked;
+    rerenderHistorical();
   });
 
   // ============================================================
