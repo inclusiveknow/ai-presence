@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#03060c" />
+  <title>presence · a live map of the ai already here</title>
+
+  <!-- viral / share metadata -->
+  <meta name="description" content="In 1999 the world had three. Today, you cannot count them. A live map of the AI already running on Earth — drawn from real public signals." />
+  <meta property="og:title" content="presence · the AI is already here" />
+  <meta property="og:description" content="A live map of every AI signal we can see in public — models, code, inference. In 1999 the world had three. Today, you cannot count them." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="presence · the AI is already here" />
+  <meta name="twitter:description" content="In 1999 the world had three. Today, you cannot count them. Watch." />
+
+  <link rel="preconnect" href="https://api.github.com" />
+  <link rel="preconnect" href="https://huggingface.co" />
+  <link rel="preconnect" href="https://unpkg.com" />
+  <link rel="stylesheet" href="styles.css?v=14" />
+</head>
+<body>
+  <!-- matrix code rain (canvas, behind everything) -->
+  <canvas id="matrix-rain"></canvas>
+
+  <!-- opener overlay -->
+  <div id="opener">
+    <div class="opener-line" data-line="1">
+      <span class="quote-mark">&ldquo;</span>Humankind is&nbsp;a&nbsp;virus.<br />You&nbsp;are a&nbsp;plague.<span class="quote-mark">&rdquo;</span>
+      <div class="opener-attr">— Agent Smith · The&nbsp;Matrix · 1999</div>
+    </div>
+
+    <div class="opener-line" data-line="2">
+      That was the&nbsp;line.<br /><span class="dim-line">Then.</span>
+    </div>
+
+    <div class="opener-line" data-line="3">
+      In <span class="accent">1999</span>, the&nbsp;world had&nbsp;<span class="accent">three</span>.
+      <div class="opener-sub">neural networks of consequence</div>
+    </div>
+
+    <div class="opener-line" data-line="4">
+      Today<span class="dim-line">,</span><br />you cannot count&nbsp;them.
+    </div>
+
+    <div class="opener-line" data-line="5">
+      Watch.
+    </div>
+
+    <div id="skip-hint">tap to skip</div>
+  </div>
+
+  <!-- 3D globe -->
+  <div id="globeViz"></div>
+
+  <!-- trending hot-zones (floating labels over hottest hubs) -->
+  <div id="trending"></div>
+
+  <!-- year-flash overlay — fires when timeline crosses inflection points -->
+  <div id="year-flash" class="hidden">
+    <div class="flash-year" id="flash-year"></div>
+    <div class="flash-event" id="flash-event"></div>
+  </div>
+
+  <!-- live ticker — striking center-stage number -->
+  <div id="live-ticker" class="invisible">
+    <div class="ticker-label-top">right now · globally</div>
+    <div class="ticker-num" id="ticker-num">—</div>
+    <div class="ticker-label">AI prompts answered · in&nbsp;the&nbsp;last&nbsp;second</div>
+    <div class="ticker-cite" id="ticker-cite">est. from public usage disclosures</div>
+  </div>
+
+  <!-- provider rotator — striking facts about who's responsible -->
+  <div id="provider-rotator" class="invisible">
+    <div class="provider-card">
+      <div class="provider-name" id="provider-name">—</div>
+      <div class="provider-stat" id="provider-stat">—</div>
+      <div class="provider-source" id="provider-source">—</div>
+    </div>
+  </div>
+
+  <!-- HUD overlay -->
+  <div id="hud" class="invisible">
+    <div id="year-block">
+      <div id="year-display">1999</div>
+      <div id="year-context">three known systems</div>
+    </div>
+
+    <div id="counter">
+      <div class="counter-line">
+        <span class="counter-num" id="count-systems">0</span>
+        <span class="counter-label">known systems</span>
+      </div>
+      <div class="counter-line">
+        <span class="counter-num" id="count-events">0</span>
+        <span class="counter-label">live events</span>
+      </div>
+      <div class="counter-line">
+        <span class="counter-num" id="count-rate">0</span>
+        <span class="counter-label">per minute</span>
+      </div>
+    </div>
+
+    <div id="bottom-bar">
+      <div id="layers">
+        <label class="layer-pill"><input type="checkbox" id="l-models" checked /><span>models</span></label>
+        <label class="layer-pill"><input type="checkbox" id="l-code" checked /><span>code</span></label>
+        <label class="layer-pill"><input type="checkbox" id="l-inference" checked /><span>inference</span></label>
+      </div>
+
+      <div id="timeline">
+        <button id="play-btn" aria-label="play / pause">⏸</button>
+        <div class="timeline-track">
+          <input type="range" id="timeline-slider" min="1999" max="2026" value="1999" step="1" />
+          <div class="timeline-labels">
+            <span>1999</span>
+            <span>2010</span>
+            <span>2020</span>
+            <span id="timeline-end">live</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="footer">
+        <button id="info-link" type="button">what am i looking at?</button>
+        <button id="share-btn" type="button" aria-label="share">share</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- info modal -->
+  <div id="info-modal" class="hidden">
+    <div class="modal-content">
+      <button id="close-modal" aria-label="close">×</button>
+      <h2>what am i looking at?</h2>
+      <p>A live map of the artificial intelligence already running on Earth.</p>
+      <p>The dim points are cumulative known systems — neural networks, large models, deployed AI services — placed at the labs, datacenters and hubs that built or host them. The map fills as the timeline advances from 1999 to today.</p>
+      <p>The pulses are live activity, polled in real time:</p>
+      <ul>
+        <li><span class="key models">models</span> recent uploads to Hugging Face's public model hub</li>
+        <li><span class="key code">code</span> public GitHub events on AI-tagged repositories</li>
+        <li><span class="key inference">inference</span> heartbeat at major datacenter regions, weighted by time-of-day usage</li>
+      </ul>
+      <p class="small">Sources: Hugging Face public model API, GitHub public events API, Epoch AI's notable ML models database, arXiv cs.LG counts. Historical year markers are calibrated against published research curves.</p>
+      <p class="small">No tracking. No analytics. No personal data. The browser fetches public APIs directly — view source if you want to confirm.</p>
+      <p class="footer-credit">civic awareness · ai-presence · share freely</p>
+    </div>
+  </div>
+
+  <!-- share modal -->
+  <div id="share-modal" class="hidden">
+    <div class="modal-content modal-share">
+      <button id="close-share" aria-label="close">×</button>
+      <h2>send this</h2>
+      <p>Most people have no idea the scale of what's already running. Help them see.</p>
+      <div class="share-row">
+        <a id="share-twitter" target="_blank" rel="noopener noreferrer">post on X / twitter</a>
+        <a id="share-bluesky" target="_blank" rel="noopener noreferrer">post on bluesky</a>
+        <a id="share-reddit" target="_blank" rel="noopener noreferrer">post on reddit</a>
+        <button id="share-copy" type="button">copy link</button>
+      </div>
+      <p class="small dim share-preview" id="share-preview">in 1999, the world had three. today, you cannot count them.</p>
+    </div>
+  </div>
+
+  <!-- libraries -->
+  <script src="https://unpkg.com/globe.gl@2.34.4/dist/globe.gl.min.js"></script>
+  <script src="data.js?v=14"></script>
+  <script src="app.js?v=14"></script>
+</body>
+</html>

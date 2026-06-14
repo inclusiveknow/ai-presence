@@ -1,0 +1,18 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# logs / temp
+*.log
+*.tmp
+.cache/
+
+# don't ship local dev artifacts
+node_modules/
+.env
+.env.local
