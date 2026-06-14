@@ -206,10 +206,15 @@
 
   // initial view tilted north and centered around the densest AI belt
   // (Europe + Middle East + India + edges of Asia/US east coast)
-  globe.pointOfView({ lat: 28, lng: 30, altitude: 1.65 }, 0);
+  const POPULATED_VIEW = { lat: 28, lng: 30, altitude: 1.65 };
+  globe.pointOfView(POPULATED_VIEW, 0);
 
   const controls = globe.controls();
-  controls.autoRotate = false;  // keep the view still — pausing should never park over ocean
+  // gentle drift during the time-lapse so the spread feels global,
+  // not bound to one hemisphere. We park the camera explicitly when
+  // live mode begins so the final resting view never sits over an ocean.
+  controls.autoRotate = true;
+  controls.autoRotateSpeed = 0.5;
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
 
@@ -483,6 +488,10 @@
     timelineEnd.textContent = "live";
     playBtn.textContent = "●";
     document.getElementById("hud").classList.add("live-mode");
+    // park the camera over the densest AI belt and stop rotating so the
+    // final resting view always shows land, not ocean
+    if (controls) controls.autoRotate = false;
+    globe.pointOfView(POPULATED_VIEW, 1500);
 
     pollGitHub();
     pollHuggingFace();
@@ -592,6 +601,8 @@
     document.getElementById("live-ticker").classList.add("invisible");
     document.getElementById("provider-rotator").classList.add("invisible");
     document.getElementById("hud").classList.remove("live-mode");
+    // resume gentle drift when scrubbing back into the time-lapse
+    if (controls) controls.autoRotate = true;
   }
 
   // ---- GitHub events ----
