@@ -291,8 +291,10 @@ draw_centered(
 draw.line([(100, 568), (W - 100, 568)], fill=(244, 237, 225, 38), width=1)
 
 # brand left
-draw.text((100, 582), "PRESENCE", fill=(244, 237, 225), font=MONO_MED)
-draw.text((100, 605), "a live map of the AI already on Earth", fill=(244, 237, 225, 140), font=MONO_TINY)
+draw.text((100, 575), "PRESENCE", fill=(244, 237, 225), font=MONO_MED)
+draw.text((100, 598), "a live map of the AI already on Earth", fill=(244, 237, 225, 140), font=MONO_TINY)
+# quiet parent-brand attribution
+draw.text((100, 614), "an Accelerant project", fill=(244, 237, 225, 115), font=MONO_TINY)
 
 # watch arrow right
 watch_text = "WATCH →"

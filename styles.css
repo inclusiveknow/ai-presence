@@ -716,6 +716,31 @@ a { color: inherit; text-decoration: none; }
   transition: all 0.2s;
 }
 
+/* Quiet parent-brand attribution — sits below the info / share row,
+   subtle enough not to compete with the live ticker but discoverable. */
+.brand-mark {
+  text-align: center;
+  margin-top: 0.55rem;
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, monospace;
+  font-size: clamp(0.6rem, 1.7vw, 0.68rem);
+  letter-spacing: 0.18em;
+  font-style: italic;
+  color: var(--text-faint);
+  pointer-events: auto;
+  text-transform: none;
+}
+.brand-mark a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s;
+  display: inline-block;
+  padding: 0.3em 0.6em;
+}
+.brand-mark a:hover, .brand-mark a:focus {
+  color: var(--text-dim);
+  outline: none;
+}
+
 #info-link:hover, #info-link:active, #share-btn:hover, #share-btn:active {
   color: var(--text);
   border-color: var(--text-faint);
